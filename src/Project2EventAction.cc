@@ -36,6 +36,9 @@
 #include "Project1DetectorConstruction.hh"
 #include "G4ParticleTypes.hh"
 
+std::ofstream myfile_HitData1("DetectedPhotons.txt", std::ios_base::app);
+G4double DetectedPhotonCount = 0;
+
 Project2EventAction::Project2EventAction(Project2RecorderBase* r)
     : recorder(r),saveThreshold(0),scintCollectionId(-1),
       pmtCollectionId(-1),verbose(0),pmtThreshold(1) {}
@@ -164,6 +167,9 @@ void Project2EventAction::EndOfEventAction(const G4Event* anEvent)
       hitStat.hitPZ = lastTrajectoryPoint->GetMomentum().getZ() / eV;
       //if( lastTrajectoryPoint->GetMomentum().getR() / eV < 2.95){
       hitStat.hitWavelength = 1239.84 / (lastTrajectoryPoint->GetMomentum().getR() / eV);
+      	DetectedPhotonCount++;
+      	myfile_HitData1 << DetectedPhotonCount << std::endl;
+
       //hitStat.enteringAngle = atan(sqrt(hitPX*hitPX + hitPY*hitPY)/hitPZ);//edit
       //}
 

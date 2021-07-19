@@ -17,6 +17,7 @@
 #include "G4Torus.hh"
 #include "G4OpticalSurface.hh"//Surface header file3
 
+#include "G4VisAttributes.hh"
 //======================================================================================================================================================== 0. header files
 
 Project1DetectorConstruction::Project1DetectorConstruction()// Constructor (Fully Understand)
@@ -37,21 +38,36 @@ void Project1DetectorConstruction::setDefaults()//Fully Understand
   experimentalHallY = (200./2.)*cm;
   experimentalHallZ = (200./2.)*cm;
   
-  TPBthickness = (3/2.)*um; //0.1
-  TPBwidth = (4.55635/2.)*cm; //(1./2.)*cm;   //  ((4.56+0.24)/2.)*cm
-  TPBlength = (100./2.)*cm; //(10./2.)*cm;
+  //For Visual
+  /* 
+  TPBthickness = (0.3/2.)*cm;
+  TPBwidth = (2/2.)*cm;
+  TPBlength = (10./2.)*cm;
+  
+  EJ280Thickness = (1./2.)*cm;
+  EJ280Width = (2/2)*cm;
+  EJ280Length = (10./2.)*cm;
+  
+  Material1_LightYield = 0;
+  pmtThickness = (0.5/2.) * cm;
+  */
+
+  //For Experiment
+  TPBthickness = (3./2.)*um;
+  TPBwidth = ((14.615+0.1)/2.)*cm;//8-sides ((7.765+0.1)/2.)*cm;//12-sides, ((4.693+0.1)/2.)*cm;//20-sides
+  TPBlength = (100./2.)*cm;
   
   EJ280Thickness = (3./2.)*mm;
-  EJ280Width = (4.55635/2)*cm; //(1./2.)*cm;
-  EJ280Length = (100./2.)*cm; //(10./2.)*cm;
+  EJ280Width = ((14.615+0.1)/2.)*cm;//8-sides ((7.765+0.1)/2.)*cm;//12-sides, ((4.693+0.1)/2.)*cm;//20-sides
+  EJ280Length = (100./2.)*cm;
   
   Material1_LightYield = 0;
   pmtThickness = (1./2.) * um;
   photodetectorType = "hitCounter";
    
   //simulationMode = "flat_plate_onlyTPB"; 
-  simulationMode = "flat_plate_onlyEJ280";
-  //simulationMode = "flat_plate";
+  //simulationMode = "flat_plate_onlyEJ280";
+  simulationMode = "flat_plate";
   isUpdated = true;
 }
 
@@ -123,11 +139,11 @@ void Project1DetectorConstruction::setMaterial1Property()//EJ280
   std::vector<G4double> wlsEmissions;
   readCsvFile(MATERIAL1_WLS_EMISSION_FILENAME, wlsEmissionEnergies, wlsEmissions, 1.0);//***
 
-  G4double refractionIndex = 1.58;//constant ***
-  std::vector<G4double> refractionIndices(emissionEnergies.size(), refractionIndex);//***
+  G4double refractionIndex = 1.58;//constant
+  std::vector<G4double> refractionIndices(emissionEnergies.size(), refractionIndex);
 
   Material1_Mpt->AddProperty("RINDEX", &emissionEnergies[0], &refractionIndices[0], (G4int) emissionEnergies.size());//1
-  Material1_Mpt->AddConstProperty("WLSTIMECONSTANT", 8.5 * ns);//2 
+  Material1_Mpt->AddConstProperty("WLSTIMECONSTANT", 9.2 * ns);//2 
   Material1_Mpt->AddProperty("WLSABSLENGTH", &wlsAbsorptionEnergies[0], &wlsAbsorptions[0], (G4int) wlsAbsorptionEnergies.size());//3
   //Material1_Mpt->AddProperty("ABSLENGTH", &absorptionEnergies[0], &absorptions[0], (G4int) absorptionEnergies.size());//4 ***
   Material1_Mpt->AddProperty("WLSCOMPONENT", &wlsEmissionEnergies[0], &wlsEmissions[0], (G4int) wlsEmissionEnergies.size());//5
@@ -161,10 +177,10 @@ void Project1DetectorConstruction::setMaterial2Property()//TPB
 
   std::vector<G4double> wlsEmissionEnergies;
   std::vector<G4double> wlsEmissions;
-  readCsvFile(MATERIAL2_WLS_EMISSION_FILENAME, wlsEmissionEnergies, wlsEmissions, 1.0);//***
+  readCsvFile(MATERIAL2_WLS_EMISSION_FILENAME, wlsEmissionEnergies, wlsEmissions, 1.0);
 
   std::vector<G4double> refractionIndexEnergies;
-  std::vector<G4double> refractionIndices;//***
+  std::vector<G4double> refractionIndices;
   readCsvFile(MATERIAL2_REFRACTION_INDEX_FILENAME, refractionIndexEnergies, refractionIndices, 1.0);//check
   
   Material2_Mpt = new G4MaterialPropertiesTable();  
@@ -174,7 +190,8 @@ void Project1DetectorConstruction::setMaterial2Property()//TPB
   Material2_Mpt->AddProperty("WLSABSLENGTH", &wlsAbsorptionEnergies[0],  &wlsAbsorptions[0],  (G4int) wlsAbsorptionEnergies.size());//3
   //Material2_Mpt->AddProperty("ABSLENGTH", &absorptionEnergies[0], &absorptions[0], (G4int) absorptionEnergies.size());//4 ***
   Material2_Mpt->AddProperty("WLSCOMPONENT", &wlsEmissionEnergies[0], &wlsEmissions[0], (G4int) wlsEmissionEnergies.size());//5 
-  //Material2_Mpt->AddConstProperty("YIELDRATIO", 1.2);//doesn't work
+  Material2_Mpt->AddConstProperty("WLSMEANNUMBERPHOTONS", 1.2);
+  //Material2_Mpt->AddConstProperty("YIELDRATIO", 1.2);
   //Material2_Mpt->AddConstProperty("SCINTILLATIONYIELD", Material2_LightYield);
   //Material2_LightYield = 1.2;
   Material2->SetMaterialPropertiesTable(Material2_Mpt);
@@ -185,7 +202,7 @@ void Project1DetectorConstruction::setMaterial3Property()//LAr
 { 
   G4cout<<"setMaterial3Property#######################################################################################################"<<G4endl;
   std::vector<G4double> refractionIndexEnergies;
-  std::vector<G4double> refractionIndices;//***
+  std::vector<G4double> refractionIndices;
   readCsvFile(MATERIAL3_REFRACTION_INDEX_FILENAME, refractionIndexEnergies, refractionIndices, 1.0);//check
 
   Material3_Mpt = new G4MaterialPropertiesTable();
@@ -222,7 +239,7 @@ void Project1DetectorConstruction::defineMaterials()//Fully Understand
 
  
   Material3 = new G4Material("Material3", 1.3954*g/cm3, 1, kStateLiquid,80*kelvin, 23.8161*atmosphere);//DUNE 77K–89K
-  Material3->AddElement(C, 1); /////Need to change 
+  Material3->AddElement(C, 1); /////***Need to change???????????????????????????????????????????????????????????????????????????????? 
   //Ar 
 }
 
@@ -290,7 +307,15 @@ G4VPhysicalVolume* Project1DetectorConstruction::makeMode1()//Fully Understand /
     sdManager->AddNewDetector(pmtSd);
   }
   pmtLogicalVolume1->SetSensitiveDetector(pmtSd);
-  
+
+  //color
+  //For color //(1.0,1.0,1.0))-white, (0.0,0.0,1.0))-blue, (1.0,0.0,0.0))-red, (0.0,1.0,0.0))-green, (1.0,0.0,1.0))-magenta
+  G4VisAttributes* VisAttributes_magenta = new G4VisAttributes(G4Colour(1.0,0.0,1.0));//magenta
+  G4VisAttributes* VisAttributes_red = new G4VisAttributes(G4Colour(1.0,0.0,0.0));//red
+  G4VisAttributes* VisAttributes_blue = new G4VisAttributes(G4Colour(0.0,0.0,1.0));//blue
+  TPBPlateLogicalVolume->SetVisAttributes(VisAttributes_magenta);
+  pmtLogicalVolume1->SetVisAttributes(VisAttributes_blue);
+
   return experimentalHallPhysicalVolume;  
 }
 
@@ -314,7 +339,7 @@ G4VPhysicalVolume* Project1DetectorConstruction::makeMode2()//Fully Understand /
   G4LogicalVolume* EJ280PlateLogicalVolume = new G4LogicalVolume(EJ280Plate, Material1, "EJ280PlateLogicalVolume", 0, 0, 0);
 
   new G4PVPlacement(0,
-                    G4ThreeVector(0.0, EJ280Thickness+pmtThickness, 0.0),
+                    G4ThreeVector(0.0, 0.0, 0.0),
                     EJ280PlateLogicalVolume,
                     "EJ280Plate",
                     experimentalHallLogicalVolume,
@@ -330,16 +355,24 @@ G4VPhysicalVolume* Project1DetectorConstruction::makeMode2()//Fully Understand /
 
   EJ280PlateLogicalVolume->SetSensitiveDetector(Material1_Sd);
 
-  // 3.Pmt
-  G4LogicalVolume* pmtLogicalVolume1 = makePmtLogicalVolume_plate1();   
+  // 4.Pmt  
+  G4LogicalVolume* pmtLogicalVolume2 = makePmtLogicalVolume_plate2();
   new G4PVPlacement(0,
-                    G4ThreeVector(0.0, 0.0, 0.0),
-                    pmtLogicalVolume1,
-                    "pmt1",
+                    G4ThreeVector(0.0, 0.0, TPBlength+pmtThickness),
+                    pmtLogicalVolume2,
+                    "pmt2",
                     experimentalHallLogicalVolume,
                     false,
                     0);
-  
+
+  new G4PVPlacement(0,
+                    G4ThreeVector(0.0, 0.0, -TPBlength-pmtThickness),
+                    pmtLogicalVolume2,
+                    "pmt3",
+                    experimentalHallLogicalVolume,
+                    false,
+                    0);
+
   Project1PmtSd* pmtSd = (Project1PmtSd*) sdManager->FindSensitiveDetector(PMT_SENSITIVE_DETECTOR_NAME, false);//***
   if (!pmtSd) {
     pmtSd = new Project1PmtSd(PMT_SENSITIVE_DETECTOR_NAME);
@@ -347,8 +380,16 @@ G4VPhysicalVolume* Project1DetectorConstruction::makeMode2()//Fully Understand /
     pmtSd->setPmtPosition(0, 0.0, 0.0, 0.0);
     sdManager->AddNewDetector(pmtSd);
   }
-  pmtLogicalVolume1->SetSensitiveDetector(pmtSd);
-  
+
+  pmtLogicalVolume2->SetSensitiveDetector(pmtSd); 
+
+  //color
+  //For color //(1.0,1.0,1.0))-white, (0.0,0.0,1.0))-blue, (1.0,0.0,0.0))-red, (0.0,1.0,0.0))-green, (1.0,0.0,1.0))-magenta
+  G4VisAttributes* VisAttributes_green = new G4VisAttributes(G4Colour(0.0,1.0,0.0));//green
+  G4VisAttributes* VisAttributes_blue = new G4VisAttributes(G4Colour(0.0,0.0,1.0));//blue
+  EJ280PlateLogicalVolume->SetVisAttributes(VisAttributes_green);
+  pmtLogicalVolume2->SetVisAttributes(VisAttributes_blue);
+
   return experimentalHallPhysicalVolume;  
 
 }
@@ -430,7 +471,7 @@ G4VPhysicalVolume* Project1DetectorConstruction::makeMode3()//Fully Understand /
 
   // 4.Pmt  
   G4LogicalVolume* pmtLogicalVolume2 = makePmtLogicalVolume_plate2();
-  new G4PVPlacement(RotationMatrix,
+  new G4PVPlacement(0,
                     G4ThreeVector(0.0, pmtThickness+EJ280Thickness, TPBlength+pmtThickness),
                     pmtLogicalVolume2,
                     "pmt2",
@@ -438,7 +479,7 @@ G4VPhysicalVolume* Project1DetectorConstruction::makeMode3()//Fully Understand /
                     false,
                     0);
 
-  new G4PVPlacement(RotationMatrix2,
+  new G4PVPlacement(0,
                     G4ThreeVector(0.0, pmtThickness+EJ280Thickness, -TPBlength-pmtThickness),
                     pmtLogicalVolume2,
                     "pmt3",
@@ -455,6 +496,17 @@ G4VPhysicalVolume* Project1DetectorConstruction::makeMode3()//Fully Understand /
   }
 
   pmtLogicalVolume2->SetSensitiveDetector(pmtSd);
+
+  //color
+  //For color //(1.0,1.0,1.0))-white, (0.0,0.0,1.0))-blue, (1.0,0.0,0.0))-red, (0.0,1.0,0.0))-green, (1.0,0.0,1.0))-magenta
+  G4VisAttributes* VisAttributes_magenta = new G4VisAttributes(G4Colour(1.0,0.0,1.0));//magenta
+  G4VisAttributes* VisAttributes_green = new G4VisAttributes(G4Colour(0.0,1.0,0.0));//red
+  G4VisAttributes* VisAttributes_blue = new G4VisAttributes(G4Colour(0.0,0.0,1.0));//blue
+  TPBPlateLogicalVolume->SetVisAttributes(VisAttributes_magenta);
+  TPBPlateLogicalVolume2->SetVisAttributes(VisAttributes_magenta);
+  EJ280PlateLogicalVolume->SetVisAttributes(VisAttributes_green);
+  pmtLogicalVolume2->SetVisAttributes(VisAttributes_blue);
+
   return experimentalHallPhysicalVolume;  
 }
 
@@ -529,15 +581,15 @@ G4LogicalVolume* Project1DetectorConstruction::makePmtLogicalVolume_plate2()//**
 
   //---------------------------------------------------------------------------------------------------------------------------------------------------
 
-  //4.3 Surface
-  G4OpticalSurface* opticalSurface = new G4OpticalSurface("opticalSurface");// **************
+  //4.3 Surface***
+  G4OpticalSurface* opticalSurface = new G4OpticalSurface("opticalSurface");
   G4MaterialPropertiesTable* opticalSurfaceMpt = new G4MaterialPropertiesTable();
   opticalSurfaceMpt->AddProperty("EFFICIENCY", &energies[0], &quantumEfficiencies[0], (G4int) energies.size());//QE
   opticalSurfaceMpt->AddProperty("REFLECTIVITY", &energies[0], &reflectivities[0], (G4int) energies.size());//Reflection
   opticalSurfaceMpt->AddProperty("RINDEX", &energies[0], &refractionIndices[0], (G4int) energies.size());//Refraction
-  opticalSurface->SetModel(glisur);// ************
-  opticalSurface->SetFinish(polished);// ************
-  opticalSurface->SetType(dielectric_metal);// ***************
+  opticalSurface->SetModel(glisur);
+  opticalSurface->SetFinish(polished);
+  opticalSurface->SetType(dielectric_metal);
   opticalSurface->SetMaterialPropertiesTable(opticalSurfaceMpt);
   new G4LogicalSkinSurface("pmtLogicalSkinSurface", photocathodeLogicalVolume, opticalSurface);
 
