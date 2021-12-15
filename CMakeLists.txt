@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.6)
-project(Project)
+cmake_minimum_required(VERSION 3.6)#cmake version that we need.
+project(Project)#(project name)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -16,10 +16,12 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
+#Don't use cry library, it gives error
 #file(GLOB cry_sources ${PROJECT_SOURCE_DIR}/cry_v1.7/src/*.cc)
 #set(CRY_LIBRARIES ${PROJECT_SOURCE_DIR}/cry_v1.7/lib/libCRY.a)
 #include_directories(${PROJECT_SOURCE_DIR}/cry_v1.7/src)
 
+#To use ROOT
 find_package(ROOT)
 include_directories(${ROOT_INCLUDE_DIRS})
 
