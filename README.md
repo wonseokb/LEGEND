@@ -16,7 +16,7 @@
       here, we need 
    5) there are some more macro files
    
-5.  [src]StackingAction.cc
+5.  [src]
    1) DetectorConstruction.cc
    2) EventAction.cc -> data to root file and text file.
    3) RunAction.cc -> header of root file data.
