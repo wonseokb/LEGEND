@@ -25,8 +25,8 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 find_package(ROOT)
 include_directories(${ROOT_INCLUDE_DIRS})
 
-add_executable(Project Project.cc ${sources} ${headers} ${cry_sources})
-target_link_libraries(Project ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${CRY_LIBRARIES})
+add_executable(Project Project.cc ${sources} ${headers}) #${cry_sources})
+target_link_libraries(Project ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})# ${CRY_LIBRARIES})
 
 set(NOVA_SCRIPTS
         vis.mac
@@ -35,9 +35,10 @@ set(NOVA_SCRIPTS
         X.png
         Y.png
         Z.png
-        general_particle_source.mac
-	Intensity.mac
-        )
+	)
+        #general_particle_source.mac
+	#Intensity.mac
+        #)
 
 foreach(_script ${NOVA_SCRIPTS})
     configure_file(
