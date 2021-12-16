@@ -1,0 +1,50 @@
+/run/verbose 2
+/run/initialize
+/vis/open OGL 800x800-0+0
+/vis/sceneHandler/create OGL
+/vis/viewer/create ! ! 800x800-0+0
+/vis/viewer/refresh
+/vis/viewer/set/autoRefresh false
+/vis/verbose errors
+/vis/drawVolume
+/vis/scene/create
+/vis/scene/add/volume world -1 -1 none m 0 0 0 0 0 0
+/vis/sceneHandler/attach
+/vis/drawTree worlds
+/vis/open ATree
+/vis/sceneHandler/create ATree
+/vis/sceneHandler/attach
+/vis/viewer/create ! ! 600
+/vis/drawVolume worlds
+/vis/scene/create
+/vis/scene/add/volume worlds -1 -1 none m 0 0 0 0 0 0
+/vis/sceneHandler/attach
+/vis/viewer/flush
+/vis/viewer/refresh viewer-1
+/vis/viewer/update viewer-1
+/vis/viewer/set/viewpointThetaPhi 45. 45.
+/vis/scene/add/trajectories smooth
+/tracking/storeTrajectory 2
+/vis/scene/notifyHandlers
+/vis/modeling/trajectories/create/drawByCharge
+/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
+/vis/scene/notifyHandlers scene-0
+/vis/scene/notifyHandlers scene-1
+/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 1
+/vis/scene/notifyHandlers scene-0
+/vis/scene/notifyHandlers scene-1
+/vis/scene/endOfEventAction accumulate
+/vis/viewer/set/autoRefresh true
+/vis/viewer/refresh
+/vis/verbose warnings
+/vis/scene/add/axes 0 0 0 50 mm
+/vis/scene/notifyHandlers
+/control/execute gui.mac
+/control/execute run.mac
+/gps/particle opticalphoton
+/gps/ene/mono 9.6875 eV
+/gps/direction 0 -1 0
+/gps/pos/centre 0. 15. 0. cm
+/run/beamOn 100
+/vis/scene/notifyHandlers scene-0
+/vis/scene/notifyHandlers scene-1
