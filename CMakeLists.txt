@@ -28,14 +28,14 @@ include_directories(${ROOT_INCLUDE_DIRS})
 add_executable(Project Project.cc ${sources} ${headers}) #${cry_sources})
 target_link_libraries(Project ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})# ${CRY_LIBRARIES})
 
-set(NOVA_SCRIPTS
-        vis.mac
-        gui.mac
-        run.png
-        X.png
-        Y.png
-        Z.png
-	)
+#set(NOVA_SCRIPTS
+#        vis.mac
+#        gui.mac
+#        run.png
+#        X.png
+#        Y.png
+#        Z.png
+#	)
         #general_particle_source.mac
 	#Intensity.mac
         #)
