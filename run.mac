@@ -1,0 +1,6 @@
+/gps/particle opticalphoton
+/gps/ene/mono 9.6875 eV
+/gps/direction 0 -1 0
+/gps/pos/centre 0. 15. 0. cm
+
+/run/beamOn 100
